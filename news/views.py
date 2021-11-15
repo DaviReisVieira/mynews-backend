@@ -6,11 +6,16 @@ import requests
 
 from mynewsauth.models import CustomUserModel
 from news.models import StoredNews
-# Create your views here.
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
+# Create your views here.
 class NewsListView(APIView):
   def get(self, request, *args, **kwargs):
-    news = requests.get("https://newsapi.org/v2/top-headlines?country=br&apiKey=4475954939f346ac80770d030097579c")
+    url = "https://newsapi.org/v2/top-headlines?country=br&apiKey="+API_KEY
+    news = requests.get(url)
     content = news.content
     stringified = json.loads(content)
     return JsonResponse(stringified, safe=False)
@@ -23,7 +28,6 @@ class StoredNewsListView(APIView):
 
   def post(self, request, *args, **kwargs):
     jsonBody = json.loads(request.body)
-    print(jsonBody['content']['source'])
     news, create = StoredNews.objects.get_or_create(
       content=jsonBody['content'],
       user=request.user,
