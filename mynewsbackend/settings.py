@@ -7,6 +7,8 @@ load_dotenv()
 
 DJANGO_SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+AZURE_AD_CLIENT_ID = os.getenv('AZURE_AD_CLIENT_ID')
+AZURE_AD_CLIENT_SECRET = os.getenv('AZURE_AD_CLIENT_SECRET')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.azure',
 
     # local
     "mynewsauth",
@@ -58,6 +61,12 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        }
+    },
+    'azure': {
+        'APP': {
+            'client_id': AZURE_AD_CLIENT_ID,
+            'secret': AZURE_AD_CLIENT_SECRET,
         }
     }
 }
@@ -152,24 +161,24 @@ WSGI_APPLICATION = 'mynewsbackend.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'mynews',
-#         'USER': 'mynewsuser',
-#         'PASSWORD': 'secret',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://localhost/<NAME>?user=<USER>&password=<PASSWORD>',
-        conn_max_age=600,
-        ssl_require=not DEBUG
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mynews',
+        'USER': 'mynewsuser',
+        'PASSWORD': 'secret',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgresql://localhost/<NAME>?user=<USER>&password=<PASSWORD>',
+#         conn_max_age=600,
+#         ssl_require=not DEBUG
+#     )
+# }
 
 
 # Password validation
